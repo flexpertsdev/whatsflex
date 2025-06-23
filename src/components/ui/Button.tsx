@@ -1,6 +1,5 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { theme } from './theme'
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'ghost' | 'danger'
@@ -22,6 +21,9 @@ const Button: React.FC<ButtonProps> = ({
   children,
   className = '',
   disabled,
+  onDrag,
+  onDragStart,
+  onDragEnd,
   ...props
 }) => {
   const baseStyles = 'inline-flex items-center justify-center font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
@@ -40,7 +42,7 @@ const Button: React.FC<ButtonProps> = ({
   }
 
   return (
-    <motion.button
+    <button
       className={`
         ${baseStyles}
         ${variantStyles[variant]}
@@ -49,8 +51,6 @@ const Button: React.FC<ButtonProps> = ({
         ${className}
       `}
       disabled={disabled || loading}
-      whileHover={{ scale: disabled || loading ? 1 : 1.02 }}
-      whileTap={{ scale: disabled || loading ? 1 : 0.98 }}
       {...props}
     >
       {loading ? (
@@ -69,7 +69,7 @@ const Button: React.FC<ButtonProps> = ({
           {icon && iconPosition === 'right' && icon}
         </>
       )}
-    </motion.button>
+    </button>
   )
 }
 

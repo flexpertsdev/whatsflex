@@ -4,7 +4,6 @@ import AdaptiveLayout from '../layouts/AdaptiveLayout'
 import ChatHeader from '../components/chat/ChatHeader'
 import MessageBubble from '../components/chat/MessageBubble'
 import MessageComposer from '../components/chat/MessageComposer'
-import ThinkingIndicator from '../components/ai/ThinkingIndicator'
 import ContextSelector from '../components/context/ContextSelector'
 import ContextBottomSheet from '../components/context/ContextBottomSheet'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -101,7 +100,7 @@ const NexusChat: React.FC = () => {
           />
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto px-4 py-6 bg-gray-50"
+          <div className="flex-1 overflow-y-auto px-4 py-6 bg-gray-50">
             {messages.length === 0 && (
               <motion.div
                 initial={{ opacity: 0 }}
@@ -125,7 +124,7 @@ const NexusChat: React.FC = () => {
             )}
 
             <div className="max-w-3xl mx-auto space-y-4">
-              {messages.map((message, index) => (
+              {messages.map((message) => (
                 <MessageBubble
                   key={message.id}
                   message={message}
@@ -146,9 +145,10 @@ const NexusChat: React.FC = () => {
                         id: 'thinking',
                         content: '',
                         sender: 'ai',
-                        timestamp: new Date(),
-                        isThinking: true
+                        timestamp: new Date()
                       }}
+                      showAvatar={true}
+                      isGrouped={false}
                     />
                   </motion.div>
                 )}
