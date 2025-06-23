@@ -14,14 +14,15 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({
   showSidebar = true
 }) => {
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-dvh bg-gray-50">
       {showSidebar && (
-        <Navigation variant="desktop" onNewChat={onNewChat} />
+        <div className="w-64 xl:w-80 border-r bg-white">
+          <Navigation variant="desktop" onNewChat={onNewChat} />
+        </div>
       )}
       
       <motion.main 
-        className="flex-1 overflow-y-auto"
-        style={{ marginLeft: showSidebar ? '256px' : '0' }}
+        className="flex-1 overflow-y-auto overscroll-contain"
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3 }}

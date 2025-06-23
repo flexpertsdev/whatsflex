@@ -70,7 +70,7 @@ const MessageComposer: React.FC<MessageComposerProps> = ({
   }
 
   return (
-    <div className="border-t border-gray-200 bg-white p-4">
+    <div className="border-t border-gray-200 bg-white p-4 safe-bottom">
       {/* Attachments Preview */}
       <AnimatePresence>
         {attachments.length > 0 && (
@@ -110,7 +110,7 @@ const MessageComposer: React.FC<MessageComposerProps> = ({
           <div className="relative">
             <button
               onClick={() => setShowAttachmentMenu(!showAttachmentMenu)}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 min-h-touch min-w-touch hover:bg-gray-100 rounded-mobile transition-colors touch-manipulation"
               disabled={disabled}
             >
               <Paperclip className="w-5 h-5 text-gray-600" />
@@ -154,7 +154,7 @@ const MessageComposer: React.FC<MessageComposerProps> = ({
             maxLength={maxLength}
             disabled={disabled}
             rows={1}
-            className="w-full resize-none bg-gray-100 rounded-lg px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 max-h-32"
+            className="w-full resize-none bg-gray-100 rounded-mobile px-4 py-2 pr-10 min-h-touch focus:outline-none focus:ring-2 focus:ring-blue-500 max-h-32 touch-manipulation"
           />
           {showEmoji && (
             <button

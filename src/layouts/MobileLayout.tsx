@@ -16,26 +16,29 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({
   showBottomNav = true
 }) => {
   return (
-    <div className="fixed inset-0 flex flex-col bg-gray-50">
+    <div className="h-dvh flex flex-col bg-gray-50">
       {showHeader && (
-        <Navigation variant="mobile" />
+        <div className="pwa-header">
+          <Navigation variant="mobile" />
+        </div>
       )}
       
       <motion.main 
-        className="flex-1 overflow-y-auto overscroll-contain"
+        className="flex-1 overflow-y-auto overscroll-contain scroll-smooth-mobile"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.2 }}
-        style={{
-          paddingTop: showHeader ? 'env(safe-area-inset-top, 0px)' : '0',
-          paddingBottom: showBottomNav ? 'calc(56px + env(safe-area-inset-bottom, 0px))' : '0',
-          WebkitOverflowScrolling: 'touch'
-        }}
       >
-        <div style={{ paddingTop: showHeader ? '56px' : '0' }}>
+        <div className={showHeader ? 'pt-header' : ''}>
           {children}
         </div>
       </motion.main>
+      
+      {showBottomNav && (
+        <div className="pwa-bottom-nav">
+          <Navigation variant="mobile" />
+        </div>
+      )}
     </div>
   )
 }

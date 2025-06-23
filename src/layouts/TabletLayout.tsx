@@ -12,7 +12,7 @@ const TabletLayout: React.FC<TabletLayoutProps> = ({
   onNewChat
 }) => {
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-dvh bg-gray-50">
       <Navigation variant="tablet" onNewChat={onNewChat} />
       
       <motion.main 

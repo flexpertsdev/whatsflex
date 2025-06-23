@@ -1,239 +1,218 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { motion } from 'framer-motion'
-import { MessageSquare } from 'lucide-react'
+import { Sparkles } from 'lucide-react'
+import AdaptiveLayout from '../layouts/AdaptiveLayout'
 
-// Foundation imports
+// Component imports
 import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
 import { Heading1, Heading2, Heading3, Body, Caption } from '../components/ui/Typography'
-
-// Component imports
 import MessageBubble from '../components/chat/MessageBubble'
 import MessageComposer from '../components/chat/MessageComposer'
-import ChatHeader from '../components/chat/ChatHeader'
 import ContextCard from '../components/context/ContextCard'
 import ContextSelector from '../components/context/ContextSelector'
-import ThinkingIndicator from '../components/ai/ThinkingIndicator'
 import AIInsightsPanel from '../components/ai/AIInsightsPanel'
+import ThinkingIndicator from '../components/ai/ThinkingIndicator'
 
 const Showcase: React.FC = () => {
-  const [selectedContexts, setSelectedContexts] = useState<string[]>(['1', '3'])
-  const [showInsights, setShowInsights] = useState(true)
-
-  // Sample data
-  const sampleMessages = [
-    {
-      id: '1',
-      content: 'Can you help me understand React hooks better?',
-      sender: 'user' as const,
-      timestamp: new Date(Date.now() - 1000 * 60 * 5),
-      status: 'read' as const
-    },
-    {
-      id: '2',
-      content: 'Of course! React hooks are functions that let you use state and other React features in functional components. The most common hooks are useState and useEffect.',
-      sender: 'ai' as const,
-      timestamp: new Date(Date.now() - 1000 * 60 * 4)
-    }
-  ]
-
-  const sampleContext = {
-    id: '1',
-    title: 'React Best Practices',
-    content: 'A comprehensive guide to React development best practices.',
-    category: 'Development',
-    tags: ['react', 'frontend'],
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24),
-    isFavorite: true,
-    wordCount: 1250
-  }
-
-  const sampleContexts = [
-    { id: '1', title: 'React Best Practices', category: 'Development', tags: ['react', 'frontend'] },
-    { id: '2', title: 'TypeScript Guidelines', category: 'Development', tags: ['typescript'] },
-    { id: '3', title: 'API Documentation', category: 'Reference', tags: ['api', 'rest'] },
-    { id: '4', title: 'Project Requirements', category: 'Planning', tags: ['requirements'] },
-  ]
-
-  const sampleInsights = [
-    {
-      id: '1',
-      type: 'suggestion' as const,
-      title: 'Consider using React.memo',
-      description: 'Your component re-renders frequently. Using React.memo could improve performance.',
-      confidence: 0.85,
-      actions: [
-        { label: 'Learn More', action: () => console.log('Learn more') },
-        { label: 'Apply Fix', action: () => console.log('Apply fix') }
-      ]
-    },
-    {
-      id: '2',
-      type: 'analysis' as const,
-      title: 'Code complexity analysis',
-      description: 'Your useEffect hook has 5 dependencies. Consider breaking it down.',
-      confidence: 0.92
-    }
-  ]
-
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-12 text-center"
-        >
-          <Heading1 className="mb-4">Nexus UI System Showcase</Heading1>
-          <Body color="secondary">
-            A complete UI system built from scratch for the Smart Context Chat AI
-          </Body>
-        </motion.div>
+    <AdaptiveLayout>
+      <div className="p-4 sm:p-6 lg:p-8">
+        <div className="max-w-7xl mx-auto space-y-12">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center"
+          >
+            <Heading1 className="flex items-center justify-center gap-3 mb-4">
+              <Sparkles className="w-8 h-8 text-blue-500" />
+              Nexus Component Showcase
+            </Heading1>
+            <Body className="text-gray-600 max-w-2xl mx-auto">
+              A comprehensive showcase of all components in the Nexus UI system.
+              These components form the foundation of our modern chat experience.
+            </Body>
+          </motion.div>
 
-        {/* Foundation Components */}
-        <section className="mb-12">
-          <Heading2 className="mb-6">Foundation Components</Heading2>
-          
-          <div className="space-y-6">
-            {/* Typography */}
-            <Card>
-              <Heading3 className="mb-4">Typography</Heading3>
-              <div className="space-y-2">
-                <Heading1>Heading 1</Heading1>
-                <Heading2>Heading 2</Heading2>
-                <Heading3>Heading 3</Heading3>
-                <Body>Body text - Regular paragraph text</Body>
-                <Caption>Caption text - Small descriptive text</Caption>
-              </div>
-            </Card>
-
-            {/* Buttons */}
-            <Card>
+          {/* Foundation Components */}
+          <section className="space-y-6">
+            <Heading2>Foundation Components</Heading2>
+            
+            <Card className="p-6">
               <Heading3 className="mb-4">Buttons</Heading3>
               <div className="flex flex-wrap gap-4">
                 <Button variant="primary">Primary Button</Button>
                 <Button variant="secondary">Secondary Button</Button>
                 <Button variant="ghost">Ghost Button</Button>
                 <Button variant="danger">Danger Button</Button>
-                <Button variant="primary" size="sm">Small</Button>
-                <Button variant="primary" size="lg">Large</Button>
-                <Button variant="primary" loading>Loading</Button>
-                <Button variant="primary" disabled>Disabled</Button>
-                <Button variant="primary" icon={<MessageSquare className="w-4 h-4" />}>
-                  With Icon
-                </Button>
+              </div>
+              <div className="flex flex-wrap gap-4 mt-4">
+                <Button size="sm">Small</Button>
+                <Button size="md">Medium</Button>
+                <Button size="lg">Large</Button>
+              </div>
+              <div className="flex flex-wrap gap-4 mt-4">
+                <Button loading>Loading...</Button>
+                <Button disabled>Disabled</Button>
+                <Button fullWidth>Full Width</Button>
               </div>
             </Card>
 
-            {/* Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card>
-                <Body>Basic Card</Body>
-              </Card>
-              <Card hoverable onClick={() => console.log('Clicked')}>
-                <Body>Hoverable Card</Body>
-              </Card>
-              <Card shadow="lg">
-                <Body>Card with Shadow</Body>
-              </Card>
-            </div>
-          </div>
-        </section>
-
-        {/* Chat Components */}
-        <section className="mb-12">
-          <Heading2 className="mb-6">Chat Components</Heading2>
-          
-          <Card className="overflow-hidden">
-            <ChatHeader
-              title="AI Assistant"
-              subtitle="Online"
-              isOnline={true}
-              onBack={() => console.log('Back')}
-              onMenuClick={() => console.log('Menu')}
-            />
-            
-            <div className="p-6 bg-gray-50 space-y-4">
-              {sampleMessages.map(message => (
-                <MessageBubble key={message.id} message={message} />
-              ))}
-              <MessageBubble
-                message={{
-                  id: 'thinking',
-                  content: '',
-                  sender: 'ai',
-                  timestamp: new Date(),
-                  isThinking: true
-                }}
-              />
-            </div>
-            
-            <MessageComposer
-              onSendMessage={(msg) => console.log('Send:', msg)}
-              placeholder="Type a message..."
-            />
-          </Card>
-        </section>
-
-        {/* Context Components */}
-        <section className="mb-12">
-          <Heading2 className="mb-6">Context Management</Heading2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <Heading3 className="mb-4">Context Card</Heading3>
-              <ContextCard
-                context={sampleContext}
-                onClick={() => console.log('Context clicked')}
-                onFavorite={() => console.log('Toggle favorite')}
-              />
-            </div>
-            
-            <div>
-              <Heading3 className="mb-4">Context Selector</Heading3>
-              <Card className="h-96 overflow-hidden">
-                <ContextSelector
-                  contexts={sampleContexts}
-                  selectedContexts={selectedContexts}
-                  onToggleContext={(id) => {
-                    setSelectedContexts(prev => 
-                      prev.includes(id) 
-                        ? prev.filter(i => i !== id)
-                        : [...prev, id]
-                    )
-                  }}
-                  onClearAll={() => setSelectedContexts([])}
-                />
-              </Card>
-            </div>
-          </div>
-        </section>
-
-        {/* AI Components */}
-        <section className="mb-12">
-          <Heading2 className="mb-6">AI Components</Heading2>
-          
-          <div className="space-y-6">
-            <div>
-              <Heading3 className="mb-4">Thinking Indicators</Heading3>
+            <Card className="p-6">
+              <Heading3 className="mb-4">Typography</Heading3>
               <div className="space-y-4">
-                <ThinkingIndicator variant="minimal" />
-                <ThinkingIndicator variant="inline" />
+                <Heading1>Heading 1 - Main Title</Heading1>
+                <Heading2>Heading 2 - Section Title</Heading2>
+                <Heading3>Heading 3 - Subsection</Heading3>
+                <Body>Body text - Regular paragraph content that can span multiple lines and provides detailed information to users.</Body>
+                <Caption className="text-gray-600">Caption - Small helper text</Caption>
               </div>
-            </div>
-          </div>
-        </section>
+            </Card>
+          </section>
 
-        {/* AI Insights Panel */}
-        <AIInsightsPanel
-          insights={sampleInsights}
-          isOpen={showInsights}
-          onClose={() => setShowInsights(false)}
-          position="bottom"
-        />
+          {/* Chat Components */}
+          <section className="space-y-6">
+            <Heading2>Chat Components</Heading2>
+            
+            <Card className="p-6">
+              <Heading3 className="mb-4">Message Bubbles</Heading3>
+              <div className="space-y-3">
+                <MessageBubble
+                  message={{
+                    id: '1',
+                    content: 'Hey! How are you doing today?',
+                    timestamp: new Date(),
+                    sender: 'ai',
+                    status: 'read'
+                  }}
+                />
+                <MessageBubble
+                  message={{
+                    id: '2',
+                    content: "I'm doing great! Just working on the new UI components. How about you?",
+                    timestamp: new Date(),
+                    sender: 'user',
+                    status: 'read'
+                  }}
+                />
+                <MessageBubble
+                  message={{
+                    id: '3',
+                    content: 'Check out the new features we just implemented!',
+                    timestamp: new Date(),
+                    sender: 'ai',
+                    status: 'delivered'
+                  }}
+                />
+              </div>
+            </Card>
+
+            <Card className="p-0">
+              <MessageComposer
+                onSendMessage={(message) => console.log('Send:', message)}
+                placeholder="Type your message here..."
+              />
+            </Card>
+          </section>
+
+          {/* Context Components */}
+          <section className="space-y-6">
+            <Heading2>Context Components</Heading2>
+            
+            <Card className="p-6">
+              <Heading3 className="mb-4">Context Cards</Heading3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <ContextCard
+                  context={{
+                    id: '1',
+                    title: 'Project Guidelines',
+                    content: 'Core principles and coding standards for the team',
+                    category: 'documentation',
+                    tags: ['guidelines', 'standards'],
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    wordCount: 1250
+                  }}
+                  onClick={() => console.log('Context clicked')}
+                />
+                <ContextCard
+                  context={{
+                    id: '2',
+                    title: 'API Documentation',
+                    content: 'Complete API reference with examples',
+                    category: 'technical',
+                    tags: ['api', 'reference'],
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    wordCount: 3400
+                  }}
+                  onClick={() => console.log('Context clicked')}
+                />
+              </div>
+            </Card>
+
+            <Card className="p-6">
+              <Heading3 className="mb-4">Context Selector</Heading3>
+              <ContextSelector
+                contexts={[
+                  { id: '1', title: 'Project Guidelines', category: 'docs', tags: ['guidelines', 'standards'] },
+                  { id: '2', title: 'API Documentation', category: 'code', tags: ['api', 'reference'] },
+                  { id: '3', title: 'Meeting Notes', category: 'notes', tags: ['meetings', 'planning'] },
+                ]}
+                selectedContexts={['1']}
+                onToggleContext={(id: string) => console.log('Toggle:', id)}
+                onSelectAll={() => console.log('Select all')}
+                onClearAll={() => console.log('Clear all')}
+              />
+            </Card>
+          </section>
+
+          {/* AI Components */}
+          <section className="space-y-6">
+            <Heading2>AI Components</Heading2>
+            
+            <Card className="p-6">
+              <Heading3 className="mb-4">AI Insights</Heading3>
+              <div className="space-y-4">
+                <AIInsightsPanel 
+                  insights={[
+                    {
+                      id: '1',
+                      type: 'suggestion',
+                      title: 'Code Optimization',
+                      description: 'Consider using useMemo for expensive calculations.',
+                      confidence: 0.85,
+                      actions: [
+                        { label: 'Apply', action: () => console.log('Apply suggestion') }
+                      ]
+                    },
+                    {
+                      id: '2',
+                      type: 'warning',
+                      title: 'Performance Issue',
+                      description: 'Large bundle size detected.',
+                      confidence: 0.92,
+                      actions: [
+                        { label: 'View Details', action: () => console.log('View details') }
+                      ]
+                    }
+                  ]}
+                />
+              </div>
+            </Card>
+
+            <Card className="p-6">
+              <Heading3 className="mb-4">AI Thinking Animation</Heading3>
+              <div className="space-y-4">
+                <ThinkingIndicator variant="inline" />
+                <ThinkingIndicator variant="minimal" />
+              </div>
+            </Card>
+          </section>
+        </div>
       </div>
-    </div>
+    </AdaptiveLayout>
   )
 }
 
