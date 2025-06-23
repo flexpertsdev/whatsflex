@@ -1,7 +1,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { Brain, Sparkles } from 'lucide-react'
-import { Caption } from '../../foundations/Typography'
+import { Caption } from '../ui/Typography'
 
 interface ThinkingIndicatorProps {
   variant?: 'inline' | 'overlay' | 'minimal'

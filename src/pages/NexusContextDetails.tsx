@@ -3,9 +3,9 @@ import { motion } from 'framer-motion'
 import { ArrowLeft, Edit3, Save, X, Tag, Calendar, FileText, Star, Trash2 } from 'lucide-react'
 import { useParams, useNavigate } from 'react-router-dom'
 import AdaptiveLayout from '../layouts/AdaptiveLayout'
-import Card from '../foundations/Card'
-import Button from '../foundations/Button'
-import { Heading1, Heading3, Body, Caption } from '../foundations/Typography'
+import Card from '../components/ui/Card'
+import Button from '../components/ui/Button'
+import { Heading1, Heading3, Body, Caption } from '../components/ui/Typography'
 
 interface Context {
   id: string
@@ -115,7 +115,7 @@ const NexusContextDetails: React.FC = () => {
   const handleDelete = () => {
     if (confirm('Are you sure you want to delete this context?')) {
       console.log('Deleting context:', context.id)
-      navigate('/nexus/contexts')
+      navigate('/contexts')
     }
   }
 
@@ -130,7 +130,7 @@ const NexusContextDetails: React.FC = () => {
   const displayContext = isEditing && editedContext ? editedContext : context
 
   return (
-    <AdaptiveLayout onNewChat={() => navigate('/nexus/chats/new')}>
+    <AdaptiveLayout onNewChat={() => navigate('/chats/new')}>
       <div className="p-6 max-w-4xl mx-auto">
         {/* Header */}
         <motion.div
@@ -140,7 +140,7 @@ const NexusContextDetails: React.FC = () => {
         >
           <div className="flex items-center gap-4 mb-4">
             <button
-              onClick={() => navigate('/nexus/contexts')}
+              onClick={() => navigate('/contexts')}
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
@@ -298,7 +298,7 @@ const NexusContextDetails: React.FC = () => {
           >
             <Button
               variant="primary"
-              onClick={() => navigate(`/nexus/chats/new?context=${context.id}`)}
+              onClick={() => navigate(`/chats/new?context=${context.id}`)}
             >
               Use in New Chat
             </Button>

@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, Filter, X, Plus, Check } from 'lucide-react'
-import Button from '../../foundations/Button'
-import { Body, Caption } from '../../foundations/Typography'
+import Button from '../ui/Button'
+import { Body, Caption } from '../ui/Typography'
 
 interface Context {
   id: string

@@ -1,7 +1,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { ArrowLeft, MoreVertical, Phone, Video, Search } from 'lucide-react'
-import { Heading4, Caption } from '../../foundations/Typography'
+import { Heading4, Caption } from '../ui/Typography'
 
 interface ChatHeaderProps {
   title: string

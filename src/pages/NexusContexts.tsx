@@ -3,8 +3,8 @@ import { motion } from 'framer-motion'
 import { Plus, Search, Filter, Grid, List } from 'lucide-react'
 import AdaptiveLayout from '../layouts/AdaptiveLayout'
 import ContextCard from '../components/context/ContextCard'
-import Button from '../foundations/Button'
-import { Heading1, Body } from '../foundations/Typography'
+import Button from '../components/ui/Button'
+import { Heading1, Body } from '../components/ui/Typography'
 import { useNavigate } from 'react-router-dom'
 
 interface Context {
@@ -83,11 +83,11 @@ const NexusContexts: React.FC = () => {
   })
 
   const handleCreateContext = () => {
-    navigate('/nexus/contexts/new')
+    navigate('/contexts/new')
   }
 
   const handleContextClick = (contextId: string) => {
-    navigate(`/nexus/contexts/${contextId}`)
+    navigate(`/contexts/${contextId}`)
   }
 
   const toggleFavorite = (contextId: string) => {
@@ -96,7 +96,7 @@ const NexusContexts: React.FC = () => {
   }
 
   return (
-    <AdaptiveLayout onNewChat={() => navigate('/nexus/chats/new')}>
+    <AdaptiveLayout onNewChat={() => navigate('/chats/new')}>
       <div className="p-6 max-w-7xl mx-auto">
         {/* Header */}
         <motion.div

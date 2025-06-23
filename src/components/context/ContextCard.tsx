@@ -1,8 +1,8 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { FileText, Clock, Tag, MoreHorizontal, Star } from 'lucide-react'
-import Card from '../../foundations/Card'
-import { Heading4, Body, Caption } from '../../foundations/Typography'
+import Card from '../ui/Card'
+import { Heading4, Body, Caption } from '../ui/Typography'
 
 interface ContextCardProps {
   context: {

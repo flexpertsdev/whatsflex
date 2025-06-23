@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import NexusNavigation from '../components/NexusNavigation'
+import Navigation from '../components/Navigation'
 
 interface MobileLayoutProps {
   children: React.ReactNode
@@ -20,7 +20,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({
   return (
     <div className="fixed inset-0 flex flex-col bg-gray-50">
       {showHeader && (
-        <NexusNavigation variant="mobile" />
+        <Navigation variant="mobile" />
       )}
       
       <motion.main 

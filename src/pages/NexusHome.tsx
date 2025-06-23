@@ -2,9 +2,9 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import { Plus, MessageSquare, Clock, TrendingUp } from 'lucide-react'
 import AdaptiveLayout from '../layouts/AdaptiveLayout'
-import Card from '../foundations/Card'
-import Button from '../foundations/Button'
-import { Heading1, Heading3, Body, Caption } from '../foundations/Typography'
+import Card from '../components/ui/Card'
+import Button from '../components/ui/Button'
+import { Heading1, Heading3, Body, Caption } from '../components/ui/Typography'
 import { useNavigate } from 'react-router-dom'
 
 interface RecentChat {
@@ -56,7 +56,7 @@ const NexusHome: React.FC = () => {
       description: 'Begin a fresh conversation with AI',
       icon: MessageSquare,
       color: 'blue',
-      action: () => navigate('/nexus/chats/new')
+      action: () => navigate('/chats/new')
     },
     {
       id: 'recent',
@@ -64,7 +64,7 @@ const NexusHome: React.FC = () => {
       description: 'View your conversation history',
       icon: Clock,
       color: 'purple',
-      action: () => navigate('/nexus/chats')
+      action: () => navigate('/chats')
     },
     {
       id: 'insights',
@@ -72,7 +72,7 @@ const NexusHome: React.FC = () => {
       description: 'Discover patterns and suggestions',
       icon: TrendingUp,
       color: 'green',
-      action: () => navigate('/nexus/insights')
+      action: () => navigate('/insights')
     }
   ]
 
@@ -151,7 +151,7 @@ const NexusHome: React.FC = () => {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => navigate('/nexus/chats')}
+              onClick={() => navigate('/chats')}
             >
               View All
             </Button>
@@ -167,7 +167,7 @@ const NexusHome: React.FC = () => {
               >
                 <Card
                   hoverable
-                  onClick={() => navigate(`/nexus/chats/${chat.id}`)}
+                  onClick={() => navigate(`/chats/${chat.id}`)}
                   padding="md"
                 >
                   <div className="flex items-start justify-between">
@@ -197,7 +197,7 @@ const NexusHome: React.FC = () => {
           transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          onClick={() => navigate('/nexus/chats/new')}
+          onClick={() => navigate('/chats/new')}
           className="fixed bottom-6 right-6 w-14 h-14 bg-blue-500 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-blue-600 md:hidden"
         >
           <Plus className="w-6 h-6" />

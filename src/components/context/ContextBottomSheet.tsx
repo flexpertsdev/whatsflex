@@ -2,7 +2,7 @@ import React from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X } from 'lucide-react'
 import ContextSelector from './ContextSelector'
-import { Heading4 } from '../../foundations/Typography'
+import { Heading4 } from '../ui/Typography'
 
 interface Context {
   id: string

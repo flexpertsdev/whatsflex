@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Brain, TrendingUp, Lightbulb, BarChart3, Calendar, Filter } from 'lucide-react'
 import AdaptiveLayout from '../layouts/AdaptiveLayout'
-import Card from '../foundations/Card'
-import Button from '../foundations/Button'
-import { Heading1, Heading3, Body, Caption } from '../foundations/Typography'
+import Card from '../components/ui/Card'
+import Button from '../components/ui/Button'
+import { Heading1, Heading3, Body, Caption } from '../components/ui/Typography'
 import AIInsightsPanel from '../components/ai/AIInsightsPanel'
 import { useNavigate } from 'react-router-dom'
 
@@ -127,7 +127,7 @@ const NexusInsights: React.FC = () => {
   })
 
   return (
-    <AdaptiveLayout onNewChat={() => navigate('/nexus/chats/new')}>
+    <AdaptiveLayout onNewChat={() => navigate('/chats/new')}>
       <div className="p-6 max-w-6xl mx-auto">
         {/* Header */}
         <motion.div

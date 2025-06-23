@@ -9,7 +9,7 @@ import ContextSelector from '../components/context/ContextSelector'
 import ContextBottomSheet from '../components/context/ContextBottomSheet'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Library, ChevronRight } from 'lucide-react'
-import Button from '../foundations/Button'
+import Button from '../components/ui/Button'
 
 interface Message {
   id: string

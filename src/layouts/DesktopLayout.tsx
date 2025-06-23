@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import NexusNavigation from '../components/NexusNavigation'
+import Navigation from '../components/Navigation'
 
 interface DesktopLayoutProps {
   children: React.ReactNode
@@ -16,7 +16,7 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({
   return (
     <div className="flex h-screen bg-gray-50">
       {showSidebar && (
-        <NexusNavigation variant="desktop" onNewChat={onNewChat} />
+        <Navigation variant="desktop" onNewChat={onNewChat} />
       )}
       
       <motion.main 

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Send, Paperclip, Mic, X, Image, FileText, Smile } from 'lucide-react'
-import Button from '../../foundations/Button'
+import Button from '../ui/Button'
 
 interface MessageComposerProps {
   onSendMessage: (message: string, attachments?: File[]) => void

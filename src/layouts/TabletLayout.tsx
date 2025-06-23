@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import NexusNavigation from '../components/NexusNavigation'
+import Navigation from '../components/Navigation'
 
 interface TabletLayoutProps {
   children: React.ReactNode
@@ -13,7 +13,7 @@ const TabletLayout: React.FC<TabletLayoutProps> = ({
 }) => {
   return (
     <div className="flex h-screen bg-gray-50">
-      <NexusNavigation variant="tablet" onNewChat={onNewChat} />
+      <Navigation variant="tablet" onNewChat={onNewChat} />
       
       <motion.main 
         className="flex-1 overflow-y-auto ml-20"

@@ -3,9 +3,9 @@ import { motion } from 'framer-motion'
 import { ArrowLeft, Camera, Save, Mail, Phone, Globe, MapPin, Briefcase, Calendar } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import AdaptiveLayout from '../layouts/AdaptiveLayout'
-import Card from '../foundations/Card'
-import Button from '../foundations/Button'
-import { Heading1, Heading3, Body, Caption } from '../foundations/Typography'
+import Card from '../components/ui/Card'
+import Button from '../components/ui/Button'
+import { Heading1, Heading3, Body, Caption } from '../components/ui/Typography'
 
 interface ProfileData {
   name: string
@@ -71,7 +71,7 @@ const NexusProfile: React.FC = () => {
   const displayData = isEditing ? editedData : profileData
 
   return (
-    <AdaptiveLayout onNewChat={() => navigate('/nexus/chats/new')}>
+    <AdaptiveLayout onNewChat={() => navigate('/chats/new')}>
       <div className="p-6 max-w-4xl mx-auto">
         {/* Header */}
         <motion.div
@@ -81,7 +81,7 @@ const NexusProfile: React.FC = () => {
         >
           <div className="flex items-center gap-4 mb-6">
             <button
-              onClick={() => navigate('/nexus/settings')}
+              onClick={() => navigate('/settings')}
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />

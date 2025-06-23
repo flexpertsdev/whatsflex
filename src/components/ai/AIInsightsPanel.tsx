@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Brain, Lightbulb, TrendingUp, AlertCircle, ChevronDown, ChevronUp, X } from 'lucide-react'
-import Card from '../../foundations/Card'
-import Button from '../../foundations/Button'
-import { Heading4, Body, Caption } from '../../foundations/Typography'
+import Card from '../ui/Card'
+import Button from '../ui/Button'
+import { Heading4, Body, Caption } from '../ui/Typography'
 
 interface Insight {
   id: string

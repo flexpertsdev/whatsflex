@@ -1,20 +1,20 @@
 import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
-import NexusHome from './screens/NexusHome'
-import NexusChat from './screens/NexusChat'
-import NexusChatList from './screens/NexusChatList'
-import NexusContexts from './screens/NexusContexts'
-import NexusContextDetails from './screens/NexusContextDetails'
-import NexusInsights from './screens/NexusInsights'
-import NexusSettings from './screens/NexusSettings'
-import NexusProfile from './screens/NexusProfile'
-import NexusShowcase from './NexusShowcase'
+import NexusHome from './pages/NexusHome'
+import NexusChat from './pages/NexusChat'
+import NexusChatList from './pages/NexusChatList'
+import NexusContexts from './pages/NexusContexts'
+import NexusContextDetails from './pages/NexusContextDetails'
+import NexusInsights from './pages/NexusInsights'
+import NexusSettings from './pages/NexusSettings'
+import NexusProfile from './pages/NexusProfile'
+import Showcase from './pages/Showcase'
 
-const NexusApp: React.FC = () => {
+const AppRoutes: React.FC = () => {
   return (
     <Routes>
       <Route path="/" element={<NexusHome />} />
-      <Route path="/showcase" element={<NexusShowcase />} />
+      <Route path="/showcase" element={<Showcase />} />
       <Route path="/chats" element={<NexusChatList />} />
       <Route path="/chats/new" element={<NexusChat />} />
       <Route path="/chats/:chatId" element={<NexusChat />} />
@@ -29,4 +29,4 @@ const NexusApp: React.FC = () => {
   )
 }
 
-export default NexusApp
+export default AppRoutes

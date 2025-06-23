@@ -21,22 +21,22 @@ interface NavItem {
   badge?: number
 }
 
-interface NexusNavigationProps {
+interface NavigationProps {
   variant: 'mobile' | 'tablet' | 'desktop'
   onNewChat?: () => void
 }
 
-const NexusNavigation: React.FC<NexusNavigationProps> = ({ variant, onNewChat }) => {
+const Navigation: React.FC<NavigationProps> = ({ variant, onNewChat }) => {
   const navigate = useNavigate()
   const location = useLocation()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const navItems: NavItem[] = [
-    { id: 'home', label: 'Home', icon: Home, path: '/nexus' },
-    { id: 'chats', label: 'Chats', icon: MessageSquare, path: '/nexus/chats', badge: 3 },
-    { id: 'contexts', label: 'Contexts', icon: Library, path: '/nexus/contexts' },
-    { id: 'thinking', label: 'AI Insights', icon: Brain, path: '/nexus/insights' },
-    { id: 'settings', label: 'Settings', icon: Settings, path: '/nexus/settings' }
+    { id: 'home', label: 'Home', icon: Home, path: '/' },
+    { id: 'chats', label: 'Chats', icon: MessageSquare, path: '/chats', badge: 3 },
+    { id: 'contexts', label: 'Contexts', icon: Library, path: '/contexts' },
+    { id: 'thinking', label: 'AI Insights', icon: Brain, path: '/insights' },
+    { id: 'settings', label: 'Settings', icon: Settings, path: '/settings' }
   ]
 
   const isActive = (path: string) => location.pathname.startsWith(path)
@@ -283,4 +283,4 @@ const NexusNavigation: React.FC<NexusNavigationProps> = ({ variant, onNewChat })
   )
 }
 
-export default NexusNavigation
+export default Navigation

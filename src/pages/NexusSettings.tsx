@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { User, Bell, Shield, Palette, Globe, HelpCircle, LogOut, ChevronRight } from 'lucide-react'
 import AdaptiveLayout from '../layouts/AdaptiveLayout'
-import Card from '../foundations/Card'
-import Button from '../foundations/Button'
-import { Heading1, Heading3, Body, Caption } from '../foundations/Typography'
+import Card from '../components/ui/Card'
+import Button from '../components/ui/Button'
+import { Heading1, Heading3, Body, Caption } from '../components/ui/Typography'
 import { useNavigate } from 'react-router-dom'
 
 interface SettingSection {
@@ -26,7 +26,7 @@ const NexusSettings: React.FC = () => {
       title: 'Profile',
       description: 'Manage your personal information',
       icon: User,
-      action: () => navigate('/nexus/profile')
+      action: () => navigate('/profile')
     },
     {
       id: 'notifications',
@@ -66,7 +66,7 @@ const NexusSettings: React.FC = () => {
   ]
 
   return (
-    <AdaptiveLayout onNewChat={() => navigate('/nexus/chats/new')}>
+    <AdaptiveLayout onNewChat={() => navigate('/chats/new')}>
       <div className="p-6 max-w-4xl mx-auto">
         {/* Header */}
         <motion.div

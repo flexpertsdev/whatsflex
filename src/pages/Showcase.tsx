@@ -3,20 +3,20 @@ import { motion } from 'framer-motion'
 import { MessageSquare, Brain, Library, Settings } from 'lucide-react'
 
 // Foundation imports
-import Button from './foundations/Button'
-import Card from './foundations/Card'
-import { Heading1, Heading2, Heading3, Body, Caption } from './foundations/Typography'
+import Button from '../components/ui/Button'
+import Card from '../components/ui/Card'
+import { Heading1, Heading2, Heading3, Body, Caption } from '../components/ui/Typography'
 
 // Component imports
-import MessageBubble from './components/chat/MessageBubble'
-import MessageComposer from './components/chat/MessageComposer'
-import ChatHeader from './components/chat/ChatHeader'
-import ContextCard from './components/context/ContextCard'
-import ContextSelector from './components/context/ContextSelector'
-import ThinkingIndicator from './components/ai/ThinkingIndicator'
-import AIInsightsPanel from './components/ai/AIInsightsPanel'
+import MessageBubble from '../components/chat/MessageBubble'
+import MessageComposer from '../components/chat/MessageComposer'
+import ChatHeader from '../components/chat/ChatHeader'
+import ContextCard from '../components/context/ContextCard'
+import ContextSelector from '../components/context/ContextSelector'
+import ThinkingIndicator from '../components/ai/ThinkingIndicator'
+import AIInsightsPanel from '../components/ai/AIInsightsPanel'
 
-const NexusShowcase: React.FC = () => {
+const Showcase: React.FC = () => {
   const [selectedContexts, setSelectedContexts] = useState<string[]>(['1', '3'])
   const [showInsights, setShowInsights] = useState(true)
 
@@ -237,4 +237,4 @@ const NexusShowcase: React.FC = () => {
   )
 }
 
-export default NexusShowcase
+export default Showcase

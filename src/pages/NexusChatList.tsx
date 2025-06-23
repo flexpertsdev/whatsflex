@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Plus, Search, MessageSquare, Clock } from 'lucide-react'
 import AdaptiveLayout from '../layouts/AdaptiveLayout'
-import Card from '../foundations/Card'
-import Button from '../foundations/Button'
-import { Heading1, Body, Caption } from '../foundations/Typography'
+import Card from '../components/ui/Card'
+import Button from '../components/ui/Button'
+import { Heading1, Body, Caption } from '../components/ui/Typography'
 import { useNavigate } from 'react-router-dom'
 
 interface Chat {
@@ -77,7 +77,7 @@ const NexusChatList: React.FC = () => {
   }
 
   return (
-    <AdaptiveLayout onNewChat={() => navigate('/nexus/chats/new')}>
+    <AdaptiveLayout onNewChat={() => navigate('/chats/new')}>
       <div className="p-6 max-w-4xl mx-auto">
         {/* Header */}
         <motion.div
@@ -90,7 +90,7 @@ const NexusChatList: React.FC = () => {
             <Button
               variant="primary"
               icon={<Plus className="w-4 h-4" />}
-              onClick={() => navigate('/nexus/chats/new')}
+              onClick={() => navigate('/chats/new')}
             >
               New Chat
             </Button>
@@ -135,7 +135,7 @@ const NexusChatList: React.FC = () => {
             >
               <Card
                 hoverable
-                onClick={() => navigate(`/nexus/chats/${chat.id}`)}
+                onClick={() => navigate(`/chats/${chat.id}`)}
                 padding="md"
               >
                 <div className="flex items-start justify-between">
@@ -179,7 +179,7 @@ const NexusChatList: React.FC = () => {
             <Button
               variant="primary"
               className="mt-4"
-              onClick={() => navigate('/nexus/chats/new')}
+              onClick={() => navigate('/chats/new')}
             >
               Start a New Chat
             </Button>
