@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Plus, Search, MessageSquare } from 'lucide-react'
 import AdaptiveLayout from '../layouts/AdaptiveLayout'
@@ -6,62 +6,45 @@ import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
 import { Heading1, Body, Caption } from '../components/ui/Typography'
 import { useNavigate } from 'react-router-dom'
-
-interface Chat {
-  id: string
-  title: string
-  lastMessage: string
-  timestamp: Date
-  unread?: boolean
-  contextCount?: number
-}
+import { useChatStore } from '../stores/chatStore'
+import { useAppStore } from '../stores/appStore'
 
 const NexusChatList: React.FC = () => {
   const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState('')
-
-  const chats: Chat[] = [
-    {
-      id: '1',
-      title: 'Project Planning Assistant',
-      lastMessage: 'Here\'s the timeline breakdown for your new feature...',
-      timestamp: new Date(Date.now() - 1000 * 60 * 30),
-      unread: true,
-      contextCount: 3
-    },
-    {
-      id: '2',
-      title: 'Code Review Helper',
-      lastMessage: 'I\'ve analyzed the pull request and found 3 suggestions...',
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2),
-      contextCount: 2
-    },
-    {
-      id: '3',
-      title: 'Learning Path Guide',
-      lastMessage: 'Based on your goals, I recommend starting with React hooks...',
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24),
-      contextCount: 5
-    },
-    {
-      id: '4',
-      title: 'API Design Discussion',
-      lastMessage: 'The RESTful approach would work well for this use case...',
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
-      contextCount: 1
-    },
-    {
-      id: '5',
-      title: 'Bug Investigation',
-      lastMessage: 'I found the issue in the authentication middleware...',
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7)
+  
+  const { user } = useAppStore()
+  const { 
+    chats, 
+    loadingChats, 
+    error,
+    loadChats,
+    subscribeToUserChats,
+    unsubscribeFromUserChats,
+    clearError
+  } = useChatStore()
+  
+  // Load chats on mount
+  useEffect(() => {
+    if (!user) {
+      navigate('/login')
+      return
     }
-  ]
+    
+    loadChats(user.id)
+    subscribeToUserChats(user.id)
+    
+    return () => {
+      unsubscribeFromUserChats()
+    }
+  }, [user])
 
-  const filteredChats = chats.filter(chat => 
-    chat.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    chat.lastMessage.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  const filteredChats = chats.filter(chat => {
+    const query = searchQuery.toLowerCase()
+    const title = chat.name.toLowerCase()
+    const lastMessage = chat.lastMessage?.toLowerCase() || ''
+    return title.includes(query) || lastMessage.includes(query)
+  })
 
   const formatTimestamp = (date: Date) => {
     const now = new Date()
@@ -76,6 +59,42 @@ const NexusChatList: React.FC = () => {
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
   }
 
+  // Show loading state
+  if (loadingChats) {
+    return (
+      <AdaptiveLayout>
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading chats...</p>
+          </div>
+        </div>
+      </AdaptiveLayout>
+    )
+  }
+  
+  // Show error state
+  if (error) {
+    return (
+      <AdaptiveLayout>
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center max-w-md">
+            <p className="text-red-600 mb-4">{error}</p>
+            <Button 
+              variant="secondary" 
+              onClick={() => {
+                clearError()
+                if (user) loadChats(user.id)
+              }}
+            >
+              Try Again
+            </Button>
+          </div>
+        </div>
+      </AdaptiveLayout>
+    )
+  }
+  
   return (
     <AdaptiveLayout onNewChat={() => navigate('/chats/new')}>
       <div className="p-6 max-w-4xl mx-auto">
@@ -135,32 +154,39 @@ const NexusChatList: React.FC = () => {
             >
               <Card
                 hoverable
-                onClick={() => navigate(`/chats/${chat.id}`)}
+                onClick={() => navigate(`/chats/${chat.$id}`)}
                 padding="md"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-medium truncate">{chat.title}</h3>
-                      {chat.unread && (
-                        <span className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0" />
+                      <h3 className="font-medium truncate">{chat.name}</h3>
+                      {chat.unreadCount > 0 && (
+                        <span className="px-2 py-0.5 bg-blue-500 text-white text-xs rounded-full">
+                          {chat.unreadCount}
+                        </span>
                       )}
                     </div>
-                    <Caption className="line-clamp-1 mb-2">{chat.lastMessage}</Caption>
+                    <Caption className="line-clamp-1 mb-2">
+                      {chat.lastMessage || 'No messages yet'}
+                    </Caption>
                     <div className="flex items-center gap-4 text-gray-500">
                       <div className="flex items-center gap-1">
                         <MessageSquare className="w-3 h-3" />
-                        <Caption>Chat</Caption>
+                        <Caption>{chat.messageCount} messages</Caption>
                       </div>
-                      {chat.contextCount && (
-                        <Caption>{chat.contextCount} contexts</Caption>
+                      {chat.contextIds.length > 0 && (
+                        <Caption>{chat.contextIds.length} contexts</Caption>
                       )}
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-2 ml-4">
                     <Caption className="flex-shrink-0">
-                      {formatTimestamp(chat.timestamp)}
+                      {formatTimestamp(new Date(chat.lastMessageAt))}
                     </Caption>
+                    {chat.archived && (
+                      <Caption className="text-gray-400">Archived</Caption>
+                    )}
                   </div>
                 </div>
               </Card>

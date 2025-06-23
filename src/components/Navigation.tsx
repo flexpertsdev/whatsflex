@@ -9,9 +9,12 @@ import {
   Plus,
   Search,
   Brain,
-  Home
+  Home,
+  LogOut,
+  User
 } from 'lucide-react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { useAppStore } from '../stores/appStore'
 
 interface NavItem {
   id: string
@@ -30,6 +33,7 @@ const Navigation: React.FC<NavigationProps> = ({ variant, onNewChat }) => {
   const navigate = useNavigate()
   const location = useLocation()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { user, logout } = useAppStore()
 
   const navItems: NavItem[] = [
     { id: 'home', label: 'Home', icon: Home, path: '/' },
@@ -40,6 +44,11 @@ const Navigation: React.FC<NavigationProps> = ({ variant, onNewChat }) => {
   ]
 
   const isActive = (path: string) => location.pathname.startsWith(path)
+
+  const handleLogout = async () => {
+    await logout()
+    navigate('/login')
+  }
 
   // Mobile Bottom Navigation
   if (variant === 'mobile') {
@@ -127,7 +136,16 @@ const Navigation: React.FC<NavigationProps> = ({ variant, onNewChat }) => {
                 exit={{ x: '100%' }}
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="p-4 border-b border-gray-200">
+                <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                      <User className="w-5 h-5 text-gray-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium">{user?.name || 'User'}</p>
+                      <p className="text-sm text-gray-600">{user?.email}</p>
+                    </div>
+                  </div>
                   <button
                     onClick={() => setMobileMenuOpen(false)}
                     className="p-2 hover:bg-gray-100 rounded-lg"
@@ -135,7 +153,7 @@ const Navigation: React.FC<NavigationProps> = ({ variant, onNewChat }) => {
                     <X className="w-5 h-5" />
                   </button>
                 </div>
-                <nav className="p-4">
+                <nav className="p-4 space-y-1">
                   {navItems.map((item) => {
                     const Icon = item.icon
                     return (
@@ -152,6 +170,25 @@ const Navigation: React.FC<NavigationProps> = ({ variant, onNewChat }) => {
                       </button>
                     )
                   })}
+                  <div className="pt-4 border-t border-gray-200">
+                    <button
+                      onClick={() => {
+                        navigate('/profile')
+                        setMobileMenuOpen(false)
+                      }}
+                      className="w-full flex items-center gap-3 p-3 hover:bg-gray-100 rounded-lg"
+                    >
+                      <User className="w-5 h-5" />
+                      <span>Profile</span>
+                    </button>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center gap-3 p-3 hover:bg-gray-100 rounded-lg text-red-600"
+                    >
+                      <LogOut className="w-5 h-5" />
+                      <span>Logout</span>
+                    </button>
+                  </div>
                 </nav>
               </motion.div>
             </motion.div>
@@ -267,8 +304,8 @@ const Navigation: React.FC<NavigationProps> = ({ variant, onNewChat }) => {
           </div>
         </div>
 
-        {onNewChat && (
-          <div className="p-4 border-t border-gray-200">
+        <div className="p-4 border-t border-gray-200 space-y-2">
+          {onNewChat && (
             <button
               onClick={onNewChat}
               className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
@@ -276,8 +313,24 @@ const Navigation: React.FC<NavigationProps> = ({ variant, onNewChat }) => {
               <Plus className="w-5 h-5" />
               <span>New Chat</span>
             </button>
+          )}
+          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+              <User className="w-4 h-4 text-gray-600" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium truncate">{user?.name || 'User'}</p>
+              <p className="text-xs text-gray-600 truncate">{user?.email}</p>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="p-2 hover:bg-gray-200 rounded-lg"
+              title="Logout"
+            >
+              <LogOut className="w-4 h-4 text-gray-600" />
+            </button>
           </div>
-        )}
+        </div>
       </div>
     </motion.nav>
   )

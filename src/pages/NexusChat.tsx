@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import AdaptiveLayout from '../layouts/AdaptiveLayout'
 import ChatHeader from '../components/chat/ChatHeader'
 import MessageBubble from '../components/chat/MessageBubble'
@@ -9,73 +9,176 @@ import ContextBottomSheet from '../components/context/ContextBottomSheet'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Library, ChevronRight } from 'lucide-react'
 import Button from '../components/ui/Button'
-
-interface Message {
-  id: string
-  content: string
-  sender: 'user' | 'ai'
-  timestamp: Date
-  status?: 'sending' | 'sent' | 'delivered' | 'read'
-}
-
-interface Context {
-  id: string
-  title: string
-  category: string
-  tags: string[]
-}
+import { useChatStore } from '../stores/chatStore'
+import { useContextStore } from '../stores/contextStore'
+import { useAppStore } from '../stores/appStore'
+import type { Message } from '../components/chat/MessageBubble'
+import type { Context } from '../components/context/ContextSelector'
 
 const NexusChat: React.FC = () => {
   const { chatId } = useParams()
-  const [messages, setMessages] = useState<Message[]>([])
+  const navigate = useNavigate()
   const [isThinking, setIsThinking] = useState(false)
   const [showContextSelector, setShowContextSelector] = useState(false)
-  const [selectedContexts, setSelectedContexts] = useState<string[]>([])
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  
+  // Get store states and actions
+  const { user } = useAppStore()
+  const { 
+    currentChat, 
+    messages: chatMessages,
+    loadingMessages,
+    sendingMessage,
+    error: chatError,
+    selectChat,
+    createChat,
+    sendMessage,
+    subscribeToCurrentChat,
+    unsubscribeFromCurrentChat,
+    clearError: clearChatError
+  } = useChatStore()
+  
+  const {
+    contexts,
+    selectedContexts,
+    loadingContexts,
+    error: contextError,
+    loadContexts,
+    toggleContext,
+    clearSelection,
+    clearError: clearContextError
+  } = useContextStore()
+  
+  // Map contexts to UI format
+  const uiContexts: Context[] = contexts.map(ctx => ({
+    id: ctx.$id,
+    title: ctx.title,
+    category: ctx.category,
+    tags: ctx.tags
+  }))
+  
+  // Get messages for current chat
+  const messages: Message[] = currentChat ? (chatMessages[currentChat.$id] || []).map(msg => ({
+    id: msg.$id,
+    content: msg.content,
+    sender: msg.role as 'user' | 'ai',
+    timestamp: new Date(msg.createdAt),
+    status: msg.status
+  })) : []
 
-  // Mock contexts
-  const contexts: Context[] = [
-    { id: '1', title: 'React Best Practices', category: 'Development', tags: ['react', 'frontend'] },
-    { id: '2', title: 'TypeScript Guidelines', category: 'Development', tags: ['typescript', 'types'] },
-    { id: '3', title: 'API Documentation', category: 'Reference', tags: ['api', 'endpoints'] },
-    { id: '4', title: 'Project Requirements', category: 'Planning', tags: ['requirements', 'specs'] },
-  ]
-
+  // Initialize chat on mount
+  useEffect(() => {
+    if (!user) {
+      navigate('/login')
+      return
+    }
+    
+    const initializeChat = async () => {
+      if (chatId === 'new') {
+        // Create new chat
+        const newChat = await createChat(user.id, 'New Chat', selectedContexts)
+        navigate(`/chats/${newChat.$id}`, { replace: true })
+      } else if (chatId) {
+        // Load existing chat
+        await selectChat(chatId)
+      }
+    }
+    
+    initializeChat()
+    
+    // Cleanup on unmount
+    return () => {
+      unsubscribeFromCurrentChat()
+    }
+  }, [chatId, user])
+  
+  // Load contexts on mount
+  useEffect(() => {
+    if (user) {
+      loadContexts(user.id)
+    }
+  }, [user])
+  
+  // Subscribe to real-time updates
+  useEffect(() => {
+    if (currentChat) {
+      subscribeToCurrentChat()
+    }
+  }, [currentChat?.$id])
+  
   // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, isThinking])
 
-  const handleSendMessage = async (content: string) => {
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      content,
-      sender: 'user',
-      timestamp: new Date(),
-      status: 'sent'
-    }
-
-    setMessages(prev => [...prev, userMessage])
-    setIsThinking(true)
-
-    // Simulate AI response
-    setTimeout(() => {
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        content: `I understand you're asking about "${content}". Let me help you with that based on the selected contexts.`,
-        sender: 'ai',
-        timestamp: new Date()
-      }
-      setMessages(prev => [...prev, aiMessage])
+  const handleSendMessage = async (content: string, attachments?: File[]) => {
+    if (!currentChat) return
+    
+    try {
+      setIsThinking(true)
+      await sendMessage(content, attachments)
+      
+      // TODO: In Phase 3, we'll trigger AI response here
+      // For now, simulate AI thinking
+      setTimeout(() => {
+        setIsThinking(false)
+      }, 2000)
+    } catch (error) {
+      console.error('Failed to send message:', error)
       setIsThinking(false)
-    }, 2000)
+    }
   }
 
-  const toggleContext = (contextId: string) => {
-    setSelectedContexts(prev => 
-      prev.includes(contextId)
-        ? prev.filter(id => id !== contextId)
-        : [...prev, contextId]
+  const handleToggleContext = (contextId: string) => {
+    toggleContext(contextId)
+    
+    // Update chat with new context selection
+    if (currentChat) {
+      const { updateChat } = useChatStore.getState()
+      updateChat(currentChat.$id, { contextIds: selectedContexts })
+    }
+  }
+  
+  // Show loading state
+  if (loadingMessages || loadingContexts) {
+    return (
+      <AdaptiveLayout 
+        mobileProps={{ showHeader: false, showBottomNav: false }}
+        desktopProps={{ showSidebar: true }}
+      >
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading chat...</p>
+          </div>
+        </div>
+      </AdaptiveLayout>
+    )
+  }
+  
+  // Show error state
+  if (chatError || contextError) {
+    return (
+      <AdaptiveLayout 
+        mobileProps={{ showHeader: false, showBottomNav: false }}
+        desktopProps={{ showSidebar: true }}
+      >
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center max-w-md">
+            <p className="text-red-600 mb-4">{chatError || contextError}</p>
+            <Button 
+              variant="secondary" 
+              onClick={() => {
+                clearChatError()
+                clearContextError()
+                navigate('/chats')
+              }}
+            >
+              Back to Chats
+            </Button>
+          </div>
+        </div>
+      </AdaptiveLayout>
     )
   }
 
@@ -93,9 +196,9 @@ const NexusChat: React.FC = () => {
         {/* Main Chat Area */}
         <div className="flex-1 flex flex-col h-full">
           <ChatHeader
-            title={chatId === 'new' ? 'New Chat' : 'AI Assistant'}
+            title={currentChat?.name || 'New Chat'}
             subtitle={selectedContexts.length > 0 ? `${selectedContexts.length} contexts selected` : 'No contexts selected'}
-            onBack={() => window.history.back()}
+            onBack={() => navigate('/chats')}
             onMenuClick={() => setShowContextSelector(!showContextSelector)}
           />
 
@@ -168,7 +271,7 @@ const NexusChat: React.FC = () => {
               <div className="flex items-center gap-2 overflow-x-auto">
                 <span className="text-sm text-gray-600 flex-shrink-0">Contexts:</span>
                 {selectedContexts.map(contextId => {
-                  const context = contexts.find(c => c.id === contextId)
+                  const context = uiContexts.find(c => c.id === contextId)
                   return context ? (
                     <span
                       key={contextId}
@@ -192,7 +295,7 @@ const NexusChat: React.FC = () => {
           <MessageComposer
             onSendMessage={handleSendMessage}
             placeholder="Type your message..."
-            disabled={isThinking}
+            disabled={isThinking || sendingMessage || !currentChat}
           />
         </div>
 
@@ -216,10 +319,10 @@ const NexusChat: React.FC = () => {
                   </button>
                 </div>
                 <ContextSelector
-                  contexts={contexts}
+                  contexts={uiContexts}
                   selectedContexts={selectedContexts}
-                  onToggleContext={toggleContext}
-                  onClearAll={() => setSelectedContexts([])}
+                  onToggleContext={handleToggleContext}
+                  onClearAll={clearSelection}
                 />
               </div>
             </motion.div>
@@ -231,10 +334,10 @@ const NexusChat: React.FC = () => {
       <ContextBottomSheet
         isOpen={showContextSelector}
         onClose={() => setShowContextSelector(false)}
-        contexts={contexts}
+        contexts={uiContexts}
         selectedContexts={selectedContexts}
-        onToggleContext={toggleContext}
-        onClearAll={() => setSelectedContexts([])}
+        onToggleContext={handleToggleContext}
+        onClearAll={clearSelection}
       />
     </AdaptiveLayout>
   )

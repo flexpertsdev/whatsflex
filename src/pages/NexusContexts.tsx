@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Plus, Search, Filter, Grid, List } from 'lucide-react'
 import AdaptiveLayout from '../layouts/AdaptiveLayout'
@@ -6,95 +6,113 @@ import ContextCard from '../components/context/ContextCard'
 import Button from '../components/ui/Button'
 import { Heading1, Body } from '../components/ui/Typography'
 import { useNavigate } from 'react-router-dom'
-
-interface Context {
-  id: string
-  title: string
-  content: string
-  category: string
-  tags: string[]
-  createdAt: Date
-  updatedAt: Date
-  isFavorite?: boolean
-  wordCount?: number
-}
+import { useContextStore } from '../stores/contextStore'
+import { useAppStore } from '../stores/appStore'
+import type { ContextCategory } from '../services/appwrite/database'
 
 const NexusContexts: React.FC = () => {
   const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState('')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [selectedCategory, setSelectedCategory] = useState<ContextCategory | null>(null)
   const [showFilters, setShowFilters] = useState(false)
-
-  // Mock contexts
-  const contexts: Context[] = [
-    {
-      id: '1',
-      title: 'React Best Practices',
-      content: 'A comprehensive guide to React development best practices including hooks, performance optimization, and component patterns.',
-      category: 'Development',
-      tags: ['react', 'frontend', 'javascript'],
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-      updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24),
-      isFavorite: true,
-      wordCount: 1250
-    },
-    {
-      id: '2',
-      title: 'TypeScript Configuration',
-      content: 'Essential TypeScript configuration options and best practices for modern web applications.',
-      category: 'Development',
-      tags: ['typescript', 'config', 'tooling'],
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 14),
-      updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3),
-      wordCount: 850
-    },
-    {
-      id: '3',
-      title: 'API Design Guidelines',
-      content: 'RESTful API design principles and patterns for building scalable web services.',
-      category: 'Architecture',
-      tags: ['api', 'rest', 'backend'],
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 30),
-      updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5),
-      wordCount: 2100
-    },
-    {
-      id: '4',
-      title: 'Project Roadmap Q1 2024',
-      content: 'Quarterly objectives and key results for the product development team.',
-      category: 'Planning',
-      tags: ['roadmap', 'okr', 'planning'],
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 60),
-      updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-      isFavorite: true,
-      wordCount: 1500
+  
+  const { user } = useAppStore()
+  const {
+    contexts,
+    loadingContexts,
+    error,
+    loadContexts,
+    createContext,
+    toggleFavorite,
+    clearError
+  } = useContextStore()
+  
+  // Load contexts on mount
+  useEffect(() => {
+    if (!user) {
+      navigate('/login')
+      return
     }
-  ]
+    
+    loadContexts(user.id)
+  }, [user])
 
-  const categories = Array.from(new Set(contexts.map(c => c.category)))
+  const categories: ContextCategory[] = ['development', 'architecture', 'documentation', 'reference', 'planning']
   
   const filteredContexts = contexts.filter(context => {
-    const matchesSearch = context.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         context.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         context.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+    const query = searchQuery.toLowerCase()
+    const matchesSearch = context.title.toLowerCase().includes(query) ||
+                         context.content.toLowerCase().includes(query) ||
+                         context.tags.some(tag => tag.toLowerCase().includes(query))
     const matchesCategory = !selectedCategory || context.category === selectedCategory
     return matchesSearch && matchesCategory
   })
 
-  const handleCreateContext = () => {
-    navigate('/contexts/new')
+  const handleCreateContext = async () => {
+    if (!user) return
+    
+    try {
+      const newContext = await createContext({
+        userId: user.id,
+        title: 'New Context',
+        content: '',
+        category: 'documentation',
+        tags: [],
+        isFavorite: false,
+        metadata: {},
+        usageCount: 0
+      })
+      navigate(`/contexts/${newContext.$id}`)
+    } catch (error) {
+      console.error('Failed to create context:', error)
+    }
   }
 
   const handleContextClick = (contextId: string) => {
     navigate(`/contexts/${contextId}`)
   }
 
-  const toggleFavorite = (contextId: string) => {
-    // Handle favorite toggle
-    console.log('Toggle favorite:', contextId)
+  const handleToggleFavorite = (contextId: string) => {
+    toggleFavorite(contextId)
   }
 
+  // Show loading state
+  if (loadingContexts) {
+    return (
+      <AdaptiveLayout>
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading contexts...</p>
+          </div>
+        </div>
+      </AdaptiveLayout>
+    )
+  }
+  
+  // Show error state
+  if (error) {
+    return (
+      <AdaptiveLayout>
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center max-w-md">
+            <p className="text-red-600 mb-4">{error}</p>
+            <Button 
+              variant="secondary" 
+              onClick={() => {
+                clearError()
+                if (user) loadContexts(user.id)
+              }}
+            >
+              Try Again
+            </Button>
+          </div>
+        </div>
+      </AdaptiveLayout>
+    )
+  }
+  
   return (
     <AdaptiveLayout onNewChat={() => navigate('/chats/new')}>
       <div className="p-6 max-w-7xl mx-auto">
@@ -215,9 +233,19 @@ const NexusContexts: React.FC = () => {
               transition={{ delay: 0.2 + index * 0.05 }}
             >
               <ContextCard
-                context={context}
-                onClick={() => handleContextClick(context.id)}
-                onFavorite={() => toggleFavorite(context.id)}
+                context={{
+                  id: context.$id,
+                  title: context.title,
+                  content: context.content,
+                  category: context.category,
+                  tags: context.tags,
+                  createdAt: new Date(context.$createdAt),
+                  updatedAt: new Date(context.$updatedAt),
+                  isFavorite: context.isFavorite,
+                  wordCount: context.content.split(/\s+/).length
+                }}
+                onClick={() => handleContextClick(context.$id)}
+                onFavorite={() => handleToggleFavorite(context.$id)}
                 variant={viewMode === 'list' ? 'detailed' : 'compact'}
               />
             </motion.div>
