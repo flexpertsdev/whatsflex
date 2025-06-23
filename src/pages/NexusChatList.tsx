@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Plus, Search, MessageSquare, Clock } from 'lucide-react'
+import { Plus, Search, MessageSquare } from 'lucide-react'
 import AdaptiveLayout from '../layouts/AdaptiveLayout'
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'

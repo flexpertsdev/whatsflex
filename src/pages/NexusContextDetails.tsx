@@ -5,7 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import AdaptiveLayout from '../layouts/AdaptiveLayout'
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
-import { Heading1, Heading3, Body, Caption } from '../components/ui/Typography'
+import { Heading1, Heading3, Caption } from '../components/ui/Typography'
 
 interface Context {
   id: string

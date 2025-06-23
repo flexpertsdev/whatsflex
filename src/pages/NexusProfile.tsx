@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Camera, Save, Mail, Phone, Globe, MapPin, Briefcase, Calendar } from 'lucide-react'
+import { ArrowLeft, Camera, Save, Mail, Phone, Globe, MapPin, Calendar } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import AdaptiveLayout from '../layouts/AdaptiveLayout'
 import Card from '../components/ui/Card'

@@ -13,9 +13,7 @@ interface MobileLayoutProps {
 const MobileLayout: React.FC<MobileLayoutProps> = ({
   children,
   showHeader = true,
-  showBottomNav = true,
-  headerTitle,
-  onBack
+  showBottomNav = true
 }) => {
   return (
     <div className="fixed inset-0 flex flex-col bg-gray-50">

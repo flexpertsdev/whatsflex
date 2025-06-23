@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, Filter, X, Plus, Check } from 'lucide-react'
+import { Search, Filter, X, Check } from 'lucide-react'
 import Button from '../ui/Button'
 import { Body, Caption } from '../ui/Typography'
 

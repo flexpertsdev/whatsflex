@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { MessageSquare, Brain, Library, Settings } from 'lucide-react'
+import { MessageSquare } from 'lucide-react'
 
 // Foundation imports
 import Button from '../components/ui/Button'
