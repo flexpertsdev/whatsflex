@@ -46,8 +46,10 @@ cp .env.example .env
 ```
 
 Edit `.env` and add your Appwrite configuration:
-- `VITE_APPWRITE_ENDPOINT`: Your Appwrite endpoint
+- `VITE_APPWRITE_ENDPOINT`: Your Appwrite endpoint (default: https://cloud.appwrite.io/v1)
 - `VITE_APPWRITE_PROJECT_ID`: Your Appwrite project ID
+
+**Note**: This project uses Appwrite, not Firebase. If deploying to Netlify, ensure you're setting Appwrite environment variables, not Firebase ones.
 
 4. Set up Appwrite collections and buckets as specified in `.env.example`
 
