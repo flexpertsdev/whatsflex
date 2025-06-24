@@ -1,11 +1,19 @@
 [build]
+  base = ""
   command = "npm run build"
   publish = "dist"
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF ."
 
 [build.environment]
+  # Node version for builds
+  NODE_VERSION = "18"
   # Disable secrets scanning for Vite environment variables
   # These are public client-side variables, not secrets
   SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES = "VITE_*"
+
+# Context specific build settings
+[context.production]
+  command = "npm run build"
 
 [[redirects]]
   from = "/*"
