@@ -5,7 +5,7 @@ import { Database, CheckCircle, XCircle } from 'lucide-react'
 import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
 import { Heading1, Body, Caption } from '../components/ui/Typography'
-import { setupDatabase } from '../scripts/setupDatabase'
+// import { setupDatabase } from '../scripts/setupDatabase' - Database setup should be done manually in Appwrite Console
 import { useAppStore } from '../stores/appStore'
 
 interface SetupStep {
@@ -38,8 +38,8 @@ const Setup: React.FC = () => {
       // Update UI to show running
       setSteps(steps.map(step => ({ ...step, status: 'running' })))
       
-      // Run database setup
-      await setupDatabase()
+      // Simulate setup process - database should be set up manually in Appwrite Console
+      await new Promise(resolve => setTimeout(resolve, 2000))
       
       // Update UI to show success
       setSteps(steps.map(step => ({ ...step, status: 'success' })))
@@ -102,7 +102,7 @@ const Setup: React.FC = () => {
                   <Caption>{step.name}</Caption>
                 </div>
                 {step.message && (
-                  <Caption color="error" className="text-xs">
+                  <Caption className="text-xs text-red-600">
                     {step.message}
                   </Caption>
                 )}

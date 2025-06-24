@@ -4,7 +4,7 @@ import { Search, Filter, X, Check } from 'lucide-react'
 import Button from '../ui/Button'
 import { Body, Caption } from '../ui/Typography'
 
-interface Context {
+export interface Context {
   id: string
   title: string
   category: string

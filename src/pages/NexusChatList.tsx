@@ -182,7 +182,7 @@ const NexusChatList: React.FC = () => {
                   </div>
                   <div className="flex flex-col items-end gap-2 ml-4">
                     <Caption className="flex-shrink-0">
-                      {formatTimestamp(new Date(chat.lastMessageAt))}
+                      {chat.lastMessageAt ? formatTimestamp(new Date(chat.lastMessageAt)) : 'No messages'}
                     </Caption>
                     {chat.archived && (
                       <Caption className="text-gray-400">Archived</Caption>

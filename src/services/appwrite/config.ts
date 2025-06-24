@@ -31,9 +31,9 @@ export const COLLECTIONS = {
 
 // Storage bucket IDs
 export const BUCKETS = {
-  ATTACHMENTS: 'chat-attachments',
-  VOICE_MESSAGES: 'voice-messages',
-  AVATARS: 'user-avatars',
+  ATTACHMENTS: 'attachments',
+  VOICE_MESSAGES: 'attachments', // Using attachments bucket for voice messages
+  AVATARS: 'avatars',
 } as const;
 
 // Function IDs

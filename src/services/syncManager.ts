@@ -1,5 +1,4 @@
 import { databaseService } from './appwrite/database';
-import type { Chat, Message, Context } from './appwrite/database';
 
 export interface SyncOperation {
   id: string;

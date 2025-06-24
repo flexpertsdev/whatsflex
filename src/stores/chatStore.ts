@@ -138,11 +138,14 @@ export const useChatStore = create<ChatState>()(
       deleteChat: async (chatId: string) => {
         try {
           await databaseService.deleteChat(chatId);
-          set(state => ({
-            chats: state.chats.filter(c => c.$id !== chatId),
-            currentChat: state.currentChat?.$id === chatId ? null : state.currentChat,
-            messages: { ...state.messages, [chatId]: undefined }
-          }));
+          set(state => {
+            const { [chatId]: _, ...remainingMessages } = state.messages;
+            return {
+              chats: state.chats.filter(c => c.$id !== chatId),
+              currentChat: state.currentChat?.$id === chatId ? null : state.currentChat,
+              messages: remainingMessages
+            };
+          });
         } catch (error: any) {
           set({ error: error.message });
         }

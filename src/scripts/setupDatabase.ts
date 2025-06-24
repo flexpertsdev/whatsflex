@@ -1,146 +1,83 @@
-import { databases, appwriteConfig, ID } from '../services/appwrite/config';
-import { Permission, Role } from 'appwrite';
+/**
+ * Database Setup Script
+ * 
+ * IMPORTANT: This script is meant to be run server-side with the Appwrite Server SDK,
+ * not with the client SDK used in the web application.
+ * 
+ * To set up the database:
+ * 1. Use the Appwrite Console to create collections and attributes
+ * 2. Or create a separate Node.js project with the Appwrite Server SDK
+ * 
+ * The collections and attributes defined below are for reference.
+ */
+
+import { DATABASE_ID } from '../services/appwrite/config';
 
 // Collection IDs
-const COLLECTIONS = {
+export const COLLECTIONS = {
   CHATS: 'chats',
   MESSAGES: 'messages',
   CONTEXTS: 'contexts'
 };
 
-async function setupDatabase() {
-  try {
-    console.log('Setting up Appwrite database...');
-    
-    // Create database (if not exists)
-    const databaseId = appwriteConfig.databaseId;
-    
-    // Create Chats collection
-    try {
-      await databases.createCollection(
-        databaseId,
-        COLLECTIONS.CHATS,
-        'Chats',
-        [
-          Permission.read(Role.users()),
-          Permission.write(Role.users())
-        ]
-      );
-      
-      // Add chat attributes
-      await databases.createStringAttribute(databaseId, COLLECTIONS.CHATS, 'userId', 255, true);
-      await databases.createStringAttribute(databaseId, COLLECTIONS.CHATS, 'name', 255, true);
-      await databases.createStringAttribute(databaseId, COLLECTIONS.CHATS, 'lastMessage', 1000, false);
-      await databases.createDatetimeAttribute(databaseId, COLLECTIONS.CHATS, 'lastMessageAt', true);
-      await databases.createIntegerAttribute(databaseId, COLLECTIONS.CHATS, 'messageCount', true, 0, undefined, 0);
-      await databases.createIntegerAttribute(databaseId, COLLECTIONS.CHATS, 'unreadCount', true, 0, undefined, 0);
-      await databases.createBooleanAttribute(databaseId, COLLECTIONS.CHATS, 'archived', true, false);
-      await databases.createStringAttribute(databaseId, COLLECTIONS.CHATS, 'contextIds', 255, false, undefined, true);
-      
-      // Create indexes
-      await databases.createIndex(databaseId, COLLECTIONS.CHATS, 'userId', 'key', ['userId']);
-      await databases.createIndex(databaseId, COLLECTIONS.CHATS, 'lastMessageAt', 'key', ['lastMessageAt'], ['desc']);
-      
-      console.log('✓ Chats collection created');
-    } catch (error: any) {
-      if (error.code !== 409) throw error; // 409 = already exists
-      console.log('✓ Chats collection already exists');
-    }
-    
-    // Create Messages collection
-    try {
-      await databases.createCollection(
-        databaseId,
-        COLLECTIONS.MESSAGES,
-        'Messages',
-        [
-          Permission.read(Role.users()),
-          Permission.write(Role.users())
-        ]
-      );
-      
-      // Add message attributes
-      await databases.createStringAttribute(databaseId, COLLECTIONS.MESSAGES, 'chatId', 255, true);
-      await databases.createStringAttribute(databaseId, COLLECTIONS.MESSAGES, 'userId', 255, true);
-      await databases.createStringAttribute(databaseId, COLLECTIONS.MESSAGES, 'content', 5000, true);
-      await databases.createEnumAttribute(databaseId, COLLECTIONS.MESSAGES, 'role', ['user', 'assistant', 'system'], true);
-      await databases.createEnumAttribute(databaseId, COLLECTIONS.MESSAGES, 'status', ['sending', 'sent', 'delivered', 'read', 'failed'], false, 'sent');
-      await databases.createStringAttribute(databaseId, COLLECTIONS.MESSAGES, 'attachments', 255, false, undefined, true);
-      await databases.createStringAttribute(databaseId, COLLECTIONS.MESSAGES, 'contextIds', 255, false, undefined, true);
-      await databases.createDatetimeAttribute(databaseId, COLLECTIONS.MESSAGES, 'createdAt', true);
-      await databases.createDatetimeAttribute(databaseId, COLLECTIONS.MESSAGES, 'editedAt', false);
-      
-      // Create indexes
-      await databases.createIndex(databaseId, COLLECTIONS.MESSAGES, 'chatId', 'key', ['chatId']);
-      await databases.createIndex(databaseId, COLLECTIONS.MESSAGES, 'createdAt', 'key', ['createdAt'], ['desc']);
-      
-      console.log('✓ Messages collection created');
-    } catch (error: any) {
-      if (error.code !== 409) throw error;
-      console.log('✓ Messages collection already exists');
-    }
-    
-    // Create Contexts collection
-    try {
-      await databases.createCollection(
-        databaseId,
-        COLLECTIONS.CONTEXTS,
-        'Contexts',
-        [
-          Permission.read(Role.users()),
-          Permission.write(Role.users())
-        ]
-      );
-      
-      // Add context attributes
-      await databases.createStringAttribute(databaseId, COLLECTIONS.CONTEXTS, 'userId', 255, true);
-      await databases.createStringAttribute(databaseId, COLLECTIONS.CONTEXTS, 'title', 255, true);
-      await databases.createStringAttribute(databaseId, COLLECTIONS.CONTEXTS, 'content', 10000, true);
-      await databases.createEnumAttribute(
-        databaseId, 
-        COLLECTIONS.CONTEXTS, 
-        'category', 
-        ['development', 'architecture', 'documentation', 'reference', 'planning'], 
-        true,
-        'documentation'
-      );
-      await databases.createStringAttribute(databaseId, COLLECTIONS.CONTEXTS, 'tags', 100, false, undefined, true);
-      await databases.createBooleanAttribute(databaseId, COLLECTIONS.CONTEXTS, 'isFavorite', true, false);
-      await databases.createIntegerAttribute(databaseId, COLLECTIONS.CONTEXTS, 'usageCount', true, 0, undefined, 0);
-      await databases.createDatetimeAttribute(databaseId, COLLECTIONS.CONTEXTS, 'lastUsedAt', false);
-      await databases.createStringAttribute(databaseId, COLLECTIONS.CONTEXTS, 'metadata', 2000, false, '{}');
-      
-      // Create indexes
-      await databases.createIndex(databaseId, COLLECTIONS.CONTEXTS, 'userId', 'key', ['userId']);
-      await databases.createIndex(databaseId, COLLECTIONS.CONTEXTS, 'category', 'key', ['category']);
-      await databases.createIndex(databaseId, COLLECTIONS.CONTEXTS, 'isFavorite', 'key', ['isFavorite']);
-      await databases.createIndex(databaseId, COLLECTIONS.CONTEXTS, 'usageCount', 'key', ['usageCount'], ['desc']);
-      
-      console.log('✓ Contexts collection created');
-    } catch (error: any) {
-      if (error.code !== 409) throw error;
-      console.log('✓ Contexts collection already exists');
-    }
-    
-    console.log('\n✅ Database setup complete!');
-    console.log('\nNext steps:');
-    console.log('1. Create storage buckets in Appwrite console:');
-    console.log('   - attachments (for message attachments)');
-    console.log('   - voice-messages (for audio messages)');
-    console.log('   - avatars (for user avatars)');
-    console.log('2. Configure Appwrite Functions for AI integration (Phase 3)');
-    
-  } catch (error) {
-    console.error('❌ Database setup failed:', error);
-    throw error;
+// Database schema for reference
+export const SCHEMA = {
+  CHATS: {
+    attributes: [
+      { key: 'userId', type: 'string', size: 255, required: true },
+      { key: 'name', type: 'string', size: 255, required: true },
+      { key: 'lastMessage', type: 'string', size: 1000, required: false },
+      { key: 'lastMessageAt', type: 'datetime', required: false },
+      { key: 'messageCount', type: 'integer', required: true, default: 0 },
+      { key: 'unreadCount', type: 'integer', required: true, default: 0 },
+      { key: 'archived', type: 'boolean', required: true, default: false },
+      { key: 'contextIds', type: 'string[]', size: 255, required: false },
+    ],
+    indexes: [
+      { key: 'userId', type: 'key', attributes: ['userId'] },
+      { key: 'lastMessageAt', type: 'key', attributes: ['lastMessageAt'], orders: ['desc'] },
+    ]
+  },
+  MESSAGES: {
+    attributes: [
+      { key: 'chatId', type: 'string', size: 255, required: true },
+      { key: 'userId', type: 'string', size: 255, required: true },
+      { key: 'content', type: 'string', size: 5000, required: true },
+      { key: 'role', type: 'enum', elements: ['user', 'assistant', 'system'], required: true },
+      { key: 'status', type: 'enum', elements: ['sending', 'sent', 'delivered', 'read', 'failed'], required: false, default: 'sent' },
+      { key: 'attachments', type: 'string[]', size: 255, required: false },
+      { key: 'contextIds', type: 'string[]', size: 255, required: false },
+      { key: 'createdAt', type: 'datetime', required: true },
+      { key: 'editedAt', type: 'datetime', required: false },
+    ],
+    indexes: [
+      { key: 'chatId', type: 'key', attributes: ['chatId'] },
+      { key: 'createdAt', type: 'key', attributes: ['createdAt'], orders: ['desc'] },
+    ]
+  },
+  CONTEXTS: {
+    attributes: [
+      { key: 'userId', type: 'string', size: 255, required: true },
+      { key: 'title', type: 'string', size: 255, required: true },
+      { key: 'content', type: 'string', size: 10000, required: true },
+      { key: 'category', type: 'enum', elements: ['knowledge', 'document', 'chat', 'code', 'custom'], required: true, default: 'knowledge' },
+      { key: 'tags', type: 'string[]', size: 100, required: false },
+      { key: 'isFavorite', type: 'boolean', required: true, default: false },
+      { key: 'usageCount', type: 'integer', required: true, default: 0 },
+      { key: 'lastUsedAt', type: 'datetime', required: false },
+      { key: 'metadata', type: 'string', size: 2000, required: false, default: '{}' },
+    ],
+    indexes: [
+      { key: 'userId', type: 'key', attributes: ['userId'] },
+      { key: 'category', type: 'key', attributes: ['category'] },
+      { key: 'isFavorite', type: 'key', attributes: ['isFavorite'] },
+      { key: 'usageCount', type: 'key', attributes: ['usageCount'], orders: ['desc'] },
+    ]
   }
-}
+};
 
-// Run setup if called directly
-if (import.meta.url === `file://${process.argv[1]}`) {
-  setupDatabase()
-    .then(() => process.exit(0))
-    .catch(() => process.exit(1));
-}
-
-export { setupDatabase };
+console.log(`
+Database Setup Instructions:
+1. Create a database with ID: ${DATABASE_ID}
+2. Create the following collections with their attributes and indexes:
+`, JSON.stringify(SCHEMA, null, 2));

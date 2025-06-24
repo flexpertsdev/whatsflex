@@ -3,15 +3,17 @@ import { motion } from 'framer-motion'
 import { Check, CheckCheck, Clock } from 'lucide-react'
 import { Caption } from '../ui/Typography'
 
+export interface Message {
+  id: string
+  content: string
+  sender: 'user' | 'ai'
+  timestamp: Date
+  status?: 'sending' | 'sent' | 'delivered' | 'read' | 'failed'
+  isThinking?: boolean
+}
+
 interface MessageBubbleProps {
-  message: {
-    id: string
-    content: string
-    sender: 'user' | 'ai'
-    timestamp: Date
-    status?: 'sending' | 'sent' | 'delivered' | 'read'
-    isThinking?: boolean
-  }
+  message: Message
   showAvatar?: boolean
   isGrouped?: boolean
 }

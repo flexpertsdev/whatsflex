@@ -1,5 +1,4 @@
 import { storage, BUCKETS, ID } from './config';
-import type { Models } from 'appwrite';
 
 export interface FileUploadResult {
   id: string;
@@ -16,7 +15,7 @@ export class StorageService {
    */
   async uploadFile(
     file: File, 
-    bucketId = BUCKETS.ATTACHMENTS
+    bucketId: string = BUCKETS.ATTACHMENTS
   ): Promise<FileUploadResult> {
     try {
       const uploadedFile = await storage.createFile(
@@ -58,7 +57,7 @@ export class StorageService {
   /**
    * Get the download URL for a file
    */
-  getFileUrl(fileId: string, bucketId = BUCKETS.ATTACHMENTS): string {
+  getFileUrl(fileId: string, bucketId: string = BUCKETS.ATTACHMENTS): string {
     return storage.getFileDownload(bucketId, fileId).toString();
   }
 
@@ -67,7 +66,7 @@ export class StorageService {
    */
   getFilePreview(
     fileId: string, 
-    bucketId = BUCKETS.ATTACHMENTS,
+    bucketId: string = BUCKETS.ATTACHMENTS,
     width = 300,
     height = 300
   ): string {
@@ -82,7 +81,7 @@ export class StorageService {
   /**
    * Delete a file from storage
    */
-  async deleteFile(fileId: string, bucketId = BUCKETS.ATTACHMENTS): Promise<void> {
+  async deleteFile(fileId: string, bucketId: string = BUCKETS.ATTACHMENTS): Promise<void> {
     try {
       await storage.deleteFile(bucketId, fileId);
     } catch (error) {

@@ -38,7 +38,7 @@ const NexusContexts: React.FC = () => {
     loadContexts(user.id)
   }, [user])
 
-  const categories: ContextCategory[] = ['development', 'architecture', 'documentation', 'reference', 'planning']
+  const categories: ContextCategory[] = ['knowledge', 'document', 'chat', 'code', 'custom']
   
   const filteredContexts = contexts.filter(context => {
     const query = searchQuery.toLowerCase()
